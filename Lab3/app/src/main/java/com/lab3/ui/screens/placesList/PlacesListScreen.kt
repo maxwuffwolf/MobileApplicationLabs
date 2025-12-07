@@ -1,6 +1,6 @@
 package com.lab3.ui.screens.placesList
 
-import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -56,12 +56,13 @@ fun PlacesListScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(itemsListState.value) { item ->
+                val interactionSource = remember { MutableInteractionSource() }
                 Card(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable(
-                            interactionSource = null,
-                            indication = LocalIndication.current,
+                            interactionSource = interactionSource,
+                            indication = null,
                         ) {
                             onDetailsScreen(item.id)
                         },

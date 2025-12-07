@@ -67,8 +67,9 @@ fun PlaceDetailsScreen(
                 )
                 Text(
                     text = itemState.value.description,
-                    style = MaterialTheme.typography.bodyLarge,
-                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight.times(1.5f)
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        lineHeight = MaterialTheme.typography.bodyLarge.lineHeight * 1.5f
+                    )
                 )
             }
         }
