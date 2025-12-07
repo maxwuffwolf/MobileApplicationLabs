@@ -113,16 +113,25 @@ fun SubjectDetailsScreen(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer
             )
         ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(12.dp),
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                StatItem("Всього", stats.total.toString())
-                StatItem("Виконано", stats.completed.toString())
-                StatItem("В процесі", stats.inProgress.toString())
-                StatItem("Відкладено", stats.postponed.toString())
+            Column(modifier = Modifier.padding(12.dp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    StatItem("Всього", stats.total.toString())
+                    StatItem("Виконано", stats.completed.toString())
+                    StatItem("В процесі", stats.inProgress.toString())
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    StatItem("Відкладено", stats.postponed.toString())
+                    StatItem("Не розпочато", stats.notStarted.toString())
+                    // Empty space for symmetry
+                    Spacer(modifier = Modifier.weight(1f))
+                }
             }
         }
 
@@ -359,11 +368,18 @@ fun calculateStats(labs: List<SubjectLabEntity>): LabStats {
     var notStarted = 0
 
     labs.forEach { lab ->
-        when (lab.status) {
-            LabStatus.COMPLETED.name -> completed++
-            LabStatus.IN_PROGRESS.name -> inProgress++
-            LabStatus.POSTPONED.name -> postponed++
-            LabStatus.NOT_STARTED.name -> notStarted++
+        // Try to parse status, default to NOT_STARTED if invalid
+        val status = try {
+            LabStatus.valueOf(lab.status)
+        } catch (e: IllegalArgumentException) {
+            LabStatus.NOT_STARTED
+        }
+        
+        when (status) {
+            LabStatus.COMPLETED -> completed++
+            LabStatus.IN_PROGRESS -> inProgress++
+            LabStatus.POSTPONED -> postponed++
+            LabStatus.NOT_STARTED -> notStarted++
         }
     }
 
