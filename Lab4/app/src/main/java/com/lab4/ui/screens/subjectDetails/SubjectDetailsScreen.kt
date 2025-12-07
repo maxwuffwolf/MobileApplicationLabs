@@ -125,12 +125,10 @@ fun SubjectDetailsScreen(
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceAround
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
                     StatItem("Відкладено", stats.postponed.toString())
                     StatItem("Не розпочато", stats.notStarted.toString())
-                    // Empty space for symmetry
-                    Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
@@ -179,7 +177,7 @@ fun SubjectDetailsScreen(
 fun LabCard(lab: SubjectLabEntity, onClick: () -> Unit) {
     val status = try {
         LabStatus.valueOf(lab.status)
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
         LabStatus.NOT_STARTED
     }
     
@@ -255,7 +253,7 @@ fun EditLabDialog(
                 ) {
                     val currentStatus = try {
                         LabStatus.valueOf(selectedStatus)
-                    } catch (e: Exception) {
+                    } catch (e: IllegalArgumentException) {
                         LabStatus.NOT_STARTED
                     }
                     
