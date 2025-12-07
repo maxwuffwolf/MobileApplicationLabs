@@ -175,12 +175,7 @@ fun SubjectDetailsScreen(
 
 @Composable
 fun LabCard(lab: SubjectLabEntity, onClick: () -> Unit) {
-    val status = try {
-        LabStatus.valueOf(lab.status)
-    } catch (e: IllegalArgumentException) {
-        LabStatus.NOT_STARTED
-    }
-    
+    val status = parseLabStatus(lab.status)
     val (icon, iconColor) = getStatusIconAndColor(status)
 
     Card(
@@ -251,11 +246,7 @@ fun EditLabDialog(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
-                    val currentStatus = try {
-                        LabStatus.valueOf(selectedStatus)
-                    } catch (e: IllegalArgumentException) {
-                        LabStatus.NOT_STARTED
-                    }
+                    val currentStatus = parseLabStatus(selectedStatus)
                     
                     OutlinedTextField(
                         value = getStatusText(currentStatus),
@@ -333,6 +324,15 @@ fun StatItem(label: String, value: String) {
     }
 }
 
+// Helper function to safely parse status string
+fun parseLabStatus(statusString: String): LabStatus {
+    return try {
+        LabStatus.valueOf(statusString)
+    } catch (e: IllegalArgumentException) {
+        LabStatus.NOT_STARTED
+    }
+}
+
 fun getStatusIconAndColor(status: LabStatus): Pair<ImageVector, Color> {
     return when (status) {
         LabStatus.NOT_STARTED -> Icons.Default.Circle to Color.Gray
@@ -366,12 +366,7 @@ fun calculateStats(labs: List<SubjectLabEntity>): LabStats {
     var notStarted = 0
 
     labs.forEach { lab ->
-        // Try to parse status, default to NOT_STARTED if invalid
-        val status = try {
-            LabStatus.valueOf(lab.status)
-        } catch (e: IllegalArgumentException) {
-            LabStatus.NOT_STARTED
-        }
+        val status = parseLabStatus(lab.status)
         
         when (status) {
             LabStatus.COMPLETED -> completed++
