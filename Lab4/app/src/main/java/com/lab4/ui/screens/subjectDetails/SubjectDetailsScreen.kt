@@ -244,8 +244,14 @@ fun EditLabDialog(
                     expanded = expanded,
                     onExpandedChange = { expanded = !expanded }
                 ) {
+                    val currentStatus = try {
+                        LabStatus.valueOf(selectedStatus)
+                    } catch (e: Exception) {
+                        LabStatus.NOT_STARTED
+                    }
+                    
                     OutlinedTextField(
-                        value = getStatusText(LabStatus.valueOf(selectedStatus)),
+                        value = getStatusText(currentStatus),
                         onValueChange = {},
                         readOnly = true,
                         trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
