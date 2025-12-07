@@ -4,11 +4,15 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.lab3.data.ItemsData
@@ -32,20 +36,68 @@ fun PlaceDetailsScreen(
     }
 
     Column(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp)
+        // Title
+        Text(
+            text = itemState.value.title,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+
+        // Details Card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
         ) {
-            Text(text = "Id: ${itemState.value.id}", modifier = Modifier.fillMaxWidth())
-            Text(text = "Title: ${itemState.value.title}", modifier = Modifier.fillMaxWidth())
-            Text(
-                text = "Description: ${itemState.value.description}", modifier = Modifier
+            Column(
+                modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
-            )
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Опис",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = itemState.value.description,
+                    style = MaterialTheme.typography.bodyLarge,
+                    lineHeight = MaterialTheme.typography.bodyLarge.lineHeight.times(1.5f)
+                )
+            }
+        }
+
+        // Additional Info Card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp),
+            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Інформація",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
+                Text(
+                    text = "ID місця: ${itemState.value.id}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }
