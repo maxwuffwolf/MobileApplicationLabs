@@ -158,18 +158,20 @@ fun SubjectDetailsScreen(
     }
 
     // Edit dialog
-    if (showEditDialog && selectedLab != null) {
-        EditLabDialog(
-            lab = selectedLab!!,
-            onDismiss = { showEditDialog = false },
-            onSave = { updatedLab ->
-                coroutineScope.launch {
-                    db.subjectLabsDao.updateSubjectLab(updatedLab)
-                    refreshLabs()
-                    showEditDialog = false
+    selectedLab?.let { lab ->
+        if (showEditDialog) {
+            EditLabDialog(
+                lab = lab,
+                onDismiss = { showEditDialog = false },
+                onSave = { updatedLab ->
+                    coroutineScope.launch {
+                        db.subjectLabsDao.updateSubjectLab(updatedLab)
+                        refreshLabs()
+                        showEditDialog = false
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
