@@ -25,4 +25,8 @@ interface SubjectLabsDao {
     // function for fetching adding new value Lab to table
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSubjectLab(subjectLabEntity: SubjectLabEntity)
+
+    // function for updating existing lab
+    @Update
+    suspend fun updateSubjectLab(subjectLabEntity: SubjectLabEntity)
 }

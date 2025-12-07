@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.lab4.data.dao.SubjectDao
 import com.lab4.data.dao.SubjectLabsDao
+import com.lab4.data.entity.LabStatus
 import com.lab4.data.entity.SubjectEntity
 import com.lab4.data.entity.SubjectLabEntity
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
  * - in annotation are added all your entities (tables)
  * - includes abstract properties of all DAO interfaces for each entity (table)
  */
-@Database(entities = [SubjectEntity::class, SubjectLabEntity::class], version = 1)
+@Database(entities = [SubjectEntity::class, SubjectLabEntity::class], version = 2)
 abstract class Lab4Database : RoomDatabase() {
     //DAO properties for each entity (table)
     // must be abstract (because Room will generate instances by itself)
@@ -60,7 +61,9 @@ object DatabaseStorage {
             _database = Room.databaseBuilder(
                 context,
                 Lab4Database::class.java, "lab4Database"
-            ).build()
+            )
+                .fallbackToDestructiveMigration() // Allow destructive migration for schema changes
+                .build()
 
             // preloading some data to DB
             preloadData()
@@ -73,41 +76,93 @@ object DatabaseStorage {
         Function for preloading some initial data to DB
      */
     private fun preloadData() {
-        // List of subjects
+        // List of subjects - 5 subjects from the semester
         val listOfSubject = listOf(
-            SubjectEntity(title = "Subject 1"),
-            SubjectEntity(title = "Subject 2"),
-            SubjectEntity(title = "Subject 3"),
-            SubjectEntity(title = "Subject 4"),
-            SubjectEntity(title = "Subject 5"),
+            SubjectEntity(title = "Мережева безпека"),
+            SubjectEntity(title = "Розгортання інформаційно-комунікаційних систем"),
+            SubjectEntity(title = "Економіка та підприємництво"),
+            SubjectEntity(title = "Проєктування мультисервісних систем"),
+            SubjectEntity(title = "Програмування мобільних додатків"),
         )
-        // List of labs
-        val listOfSubjectLabs = listOf(
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[1] title",
-                description = "Lab[1] description",
-                comment = "Lab[1] comment",
-                isCompleted = true,
-            ),
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[2] title",
-                description = "Lab[2] description",
-                inProgress = true,
-            ),
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[3] title",
-                description = "Lab[3] description",
-            ),
+        
+        // List of labs for each subject
+        val listOfSubjectLabs = mutableListOf<SubjectLabEntity>()
+        
+        // Мережева безпека - 12 labs
+        for (i in 1..12) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 1,
+                    title = "Лабораторна робота №$i",
+                    description = "Опис лабораторної роботи №$i з мережевої безпеки",
+                    status = LabStatus.NOT_STARTED.name,
+                    comment = ""
+                )
+            )
+        }
+        
+        // Розгортання інформаційно-комунікаційних систем - 8 labs
+        for (i in 1..8) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 2,
+                    title = "Лабораторна робота №$i",
+                    description = "Опис лабораторної роботи №$i з розгортання ІКС",
+                    status = if (i <= 3) LabStatus.COMPLETED.name else LabStatus.NOT_STARTED.name,
+                    comment = if (i == 1) "Перша робота виконана успішно" else ""
+                )
+            )
+        }
+        
+        // Економіка та підприємництво - 1 lab
+        listOfSubjectLabs.add(
             SubjectLabEntity(
                 subjectId = 3,
-                title = "Lab[4] title",
-                description = "Lab[4] description",
-                comment = "Lab[4] comment"
-            ),
+                title = "Лабораторна робота №1",
+                description = "Опис лабораторної роботи з економіки та підприємництва",
+                status = LabStatus.IN_PROGRESS.name,
+                comment = "Робота в процесі виконання"
+            )
         )
+        
+        // Проєктування мультисервісних систем - 8 labs
+        for (i in 1..8) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 4,
+                    title = "Лабораторна робота №$i",
+                    description = "Опис лабораторної роботи №$i з проєктування МСС",
+                    status = when {
+                        i <= 2 -> LabStatus.COMPLETED.name
+                        i == 3 -> LabStatus.IN_PROGRESS.name
+                        i == 4 -> LabStatus.POSTPONED.name
+                        else -> LabStatus.NOT_STARTED.name
+                    },
+                    comment = when (i) {
+                        3 -> "Потрібно доробити діаграми"
+                        4 -> "Відкладено через інші роботи"
+                        else -> ""
+                    }
+                )
+            )
+        }
+        
+        // Програмування мобільних додатків - 7 labs
+        for (i in 1..7) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 5,
+                    title = "Лабораторна робота №$i",
+                    description = "Опис лабораторної роботи №$i з програмування мобільних додатків",
+                    status = when {
+                        i <= 4 -> LabStatus.COMPLETED.name
+                        i == 5 -> LabStatus.IN_PROGRESS.name
+                        else -> LabStatus.NOT_STARTED.name
+                    },
+                    comment = if (i == 5) "Зараз виконується Lab4" else ""
+                )
+            )
+        }
 
         // Request to add all Subjects from the list to DB
         listOfSubject.forEach { subject ->
