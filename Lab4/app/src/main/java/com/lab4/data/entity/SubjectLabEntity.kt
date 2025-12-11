@@ -30,6 +30,5 @@ data class SubjectLabEntity(
     val title: String,
     val description: String,
     val comment: String? = null,
-    val inProgress: Boolean = false,
-    val isCompleted: Boolean = false,
+    val status: LabStatus = LabStatus.NOT_STARTED
 )

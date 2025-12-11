@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.lab4.data.dao.SubjectDao
 import com.lab4.data.dao.SubjectLabsDao
 import com.lab4.data.entity.SubjectEntity
 import com.lab4.data.entity.SubjectLabEntity
+import com.lab4.data.entity.LabStatus
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -21,7 +23,8 @@ import kotlinx.coroutines.launch
  * - in annotation are added all your entities (tables)
  * - includes abstract properties of all DAO interfaces for each entity (table)
  */
-@Database(entities = [SubjectEntity::class, SubjectLabEntity::class], version = 1)
+@Database(entities = [SubjectEntity::class, SubjectLabEntity::class], version = 2)
+@TypeConverters(Converters::class)
 abstract class Lab4Database : RoomDatabase() {
     //DAO properties for each entity (table)
     // must be abstract (because Room will generate instances by itself)
@@ -60,7 +63,9 @@ object DatabaseStorage {
             _database = Room.databaseBuilder(
                 context,
                 Lab4Database::class.java, "lab4Database"
-            ).build()
+            )
+                .fallbackToDestructiveMigration()
+                .build()
 
             // preloading some data to DB
             preloadData()
@@ -75,39 +80,67 @@ object DatabaseStorage {
     private fun preloadData() {
         // List of subjects
         val listOfSubject = listOf(
-            SubjectEntity(title = "Subject 1"),
-            SubjectEntity(title = "Subject 2"),
-            SubjectEntity(title = "Subject 3"),
-            SubjectEntity(title = "Subject 4"),
-            SubjectEntity(title = "Subject 5"),
+            SubjectEntity(title = "Мережева безпека"),
+            SubjectEntity(title = "Розгортання інформаційних систем"),
+            SubjectEntity(title = "Економіка та підприємництво"),
+            SubjectEntity(title = "Проектування комунікаційних систем"),
+            SubjectEntity(title = "Програмування мобільних додатків"),
         )
         // List of labs
-        val listOfSubjectLabs = listOf(
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[1] title",
-                description = "Lab[1] description",
-                comment = "Lab[1] comment",
-                isCompleted = true,
-            ),
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[2] title",
-                description = "Lab[2] description",
-                inProgress = true,
-            ),
-            SubjectLabEntity(
-                subjectId = 1,
-                title = "Lab[3] title",
-                description = "Lab[3] description",
-            ),
+        val listOfSubjectLabs = mutableListOf<SubjectLabEntity>()
+        
+        // Мережева безпека - 12 labs
+        for (i in 1..12) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 1,
+                    title = "Лабораторна робота $i",
+                    description = "Опис лабораторної роботи $i з мережевої безпеки"
+                )
+            )
+        }
+        
+        // Розгортання інформаційних систем - 8 labs
+        for (i in 1..8) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 2,
+                    title = "Лабораторна робота $i",
+                    description = "Опис лабораторної роботи $i з розгортання інформаційних систем"
+                )
+            )
+        }
+        
+        // Економіка та підприємництво - 1 lab
+        listOfSubjectLabs.add(
             SubjectLabEntity(
                 subjectId = 3,
-                title = "Lab[4] title",
-                description = "Lab[4] description",
-                comment = "Lab[4] comment"
-            ),
+                title = "Лабораторна робота 1",
+                description = "Опис лабораторної роботи 1 з економіки та підприємництва"
+            )
         )
+        
+        // Проектування комунікаційних систем - 8 labs
+        for (i in 1..8) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 4,
+                    title = "Лабораторна робота $i",
+                    description = "Опис лабораторної роботи $i з проектування комунікаційних систем"
+                )
+            )
+        }
+        
+        // Програмування мобільних додатків - 7 labs
+        for (i in 1..7) {
+            listOfSubjectLabs.add(
+                SubjectLabEntity(
+                    subjectId = 5,
+                    title = "Лабораторна робота $i",
+                    description = "Опис лабораторної роботи $i з програмування мобільних додатків"
+                )
+            )
+        }
 
         // Request to add all Subjects from the list to DB
         listOfSubject.forEach { subject ->

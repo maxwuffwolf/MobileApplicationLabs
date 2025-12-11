@@ -25,4 +25,12 @@ interface SubjectLabsDao {
     // function for fetching adding new value Lab to table
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun addSubjectLab(subjectLabEntity: SubjectLabEntity)
+    
+    // function for updating Lab in table
+    @Update
+    suspend fun updateSubjectLab(subjectLabEntity: SubjectLabEntity)
+    
+    // function for getting single Lab by id
+    @Query("SELECT * FROM subjectsLabs WHERE id = :labId")
+    suspend fun getSubjectLabById(labId: Int): SubjectLabEntity?
 }
