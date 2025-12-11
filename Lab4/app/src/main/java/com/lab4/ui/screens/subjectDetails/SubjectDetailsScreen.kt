@@ -25,6 +25,7 @@ import com.lab4.data.db.DatabaseStorage
 import com.lab4.data.entity.LabStatus
 import com.lab4.data.entity.SubjectEntity
 import com.lab4.data.entity.SubjectLabEntity
+import com.lab4.data.entity.toUkrainianText
 import com.lab4.ui.navigation.SubjectDetailsRoute
 import com.lab4.ui.theme.Lab4Theme
 
@@ -98,7 +99,7 @@ fun SubjectDetailsScreen(
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            text = "Статус: ${getStatusText(lab.status)}",
+                            text = "Статус: ${lab.status.toUkrainianText()}",
                             fontSize = 14.sp,
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.padding(top = 4.dp)
@@ -121,15 +122,6 @@ fun SubjectDetailsScreen(
 /**
  * Preview can't display data from DB
  */
-fun getStatusText(status: LabStatus): String {
-    return when (status) {
-        LabStatus.NOT_STARTED -> "Не розпочато"
-        LabStatus.IN_PROGRESS -> "В прогресі"
-        LabStatus.POSTPONED -> "Відкладено"
-        LabStatus.COMPLETED -> "Виконано"
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun SubjectDetailsScreenPreview() {

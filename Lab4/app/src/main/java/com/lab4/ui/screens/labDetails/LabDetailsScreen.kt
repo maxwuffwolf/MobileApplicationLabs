@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.sp
 import com.lab4.data.db.DatabaseStorage
 import com.lab4.data.entity.LabStatus
 import com.lab4.data.entity.SubjectLabEntity
+import com.lab4.data.entity.toUkrainianText
 import com.lab4.ui.navigation.LabDetailsRoute
 import kotlinx.coroutines.launch
 
@@ -80,7 +81,7 @@ fun LabDetailsScreen(
                 onExpandedChange = { expanded = !expanded }
             ) {
                 OutlinedTextField(
-                    value = getStatusText(selectedStatus),
+                    value = selectedStatus.toUkrainianText(),
                     onValueChange = {},
                     readOnly = true,
                     trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
@@ -95,7 +96,7 @@ fun LabDetailsScreen(
                 ) {
                     LabStatus.values().forEach { status ->
                         DropdownMenuItem(
-                            text = { Text(getStatusText(status)) },
+                            text = { Text(status.toUkrainianText()) },
                             onClick = {
                                 selectedStatus = status
                                 expanded = false
@@ -145,14 +146,5 @@ fun LabDetailsScreen(
                 Text("Зберегти", fontSize = 16.sp)
             }
         }
-    }
-}
-
-fun getStatusText(status: LabStatus): String {
-    return when (status) {
-        LabStatus.NOT_STARTED -> "Не розпочато"
-        LabStatus.IN_PROGRESS -> "В прогресі"
-        LabStatus.POSTPONED -> "Відкладено"
-        LabStatus.COMPLETED -> "Виконано"
     }
 }
