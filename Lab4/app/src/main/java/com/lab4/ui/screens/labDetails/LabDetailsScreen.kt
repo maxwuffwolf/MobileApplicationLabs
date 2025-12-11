@@ -94,7 +94,7 @@ fun LabDetailsScreen(
                     expanded = expanded,
                     onDismissRequest = { expanded = false }
                 ) {
-                    LabStatus.values().forEach { status ->
+                    LabStatus.entries.forEach { status ->
                         DropdownMenuItem(
                             text = { Text(status.toUkrainianText()) },
                             onClick = {

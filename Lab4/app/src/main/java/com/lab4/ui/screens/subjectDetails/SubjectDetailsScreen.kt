@@ -2,6 +2,7 @@ package com.lab4.ui.screens.subjectDetails
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -81,7 +82,7 @@ fun SubjectDetailsScreen(
                         .fillMaxWidth()
                         .padding(vertical = 4.dp)
                         .clickable(
-                            interactionSource = null,
+                            interactionSource = remember { MutableInteractionSource() },
                             indication = LocalIndication.current
                         ) {
                             lab.id?.let { onLabClick(it) }
