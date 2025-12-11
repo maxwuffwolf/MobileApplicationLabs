@@ -2,6 +2,7 @@ package com.lab4.ui.screens.subjectsList
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,7 +56,7 @@ fun SubjectsListScreen(
                         .fillMaxWidth()
                         .padding(16.dp)
                         .clickable(
-                            interactionSource = null,
+                            interactionSource = remember { MutableInteractionSource() },
                             indication = LocalIndication.current,
                         ) { subject.id?.let { id -> onDetailsScreen(id) } }
                 )

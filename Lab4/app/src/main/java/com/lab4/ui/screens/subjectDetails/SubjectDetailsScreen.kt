@@ -1,12 +1,17 @@
 package com.lab4.ui.screens.subjectDetails
 
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.Surface
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,14 +23,17 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.lab4.data.db.DatabaseStorage
+import com.lab4.data.entity.LabStatus
 import com.lab4.data.entity.SubjectEntity
 import com.lab4.data.entity.SubjectLabEntity
+import com.lab4.data.entity.toUkrainianText
 import com.lab4.ui.navigation.SubjectDetailsRoute
 import com.lab4.ui.theme.Lab4Theme
 
 @Composable
 fun SubjectDetailsScreen(
     route: SubjectDetailsRoute,
+    onLabClick: (Int) -> Unit
 ) {
     // Context - object which contains info about your app, has access to storage
     // is used for Room DB initialization
@@ -61,7 +69,7 @@ fun SubjectDetailsScreen(
             modifier = Modifier.padding(top = 16.dp)
         )
 
-        Text(text = "Labs", fontSize = 28.sp, modifier = Modifier.padding(top = 16.dp))
+        Text(text = "Лабораторні роботи", fontSize = 28.sp, modifier = Modifier.padding(top = 16.dp))
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
@@ -69,24 +77,42 @@ fun SubjectDetailsScreen(
                 .padding(top = 16.dp)
         ) {
             items(subjectLabsState.value) { lab ->
-                Surface(
-                    shadowElevation = 8.dp,
-                    tonalElevation = 8.dp,
+                Card(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(4.dp)
+                        .padding(vertical = 4.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = LocalIndication.current
+                        ) {
+                            lab.id?.let { onLabClick(it) }
+                        },
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
                         Text(
-                            text = "Lab: ID:${lab.id} Subject:${lab.subjectId} Title: ${lab.title}",
-                            fontSize = 20.sp
+                            text = lab.title,
+                            fontSize = 18.sp,
+                            style = MaterialTheme.typography.titleMedium
                         )
                         Text(
-                            text = "isCompleted:${lab.isCompleted} | isInProgress:${lab.inProgress}",
-                            fontSize = 20.sp
+                            text = "Статус: ${lab.status.toUkrainianText()}",
+                            fontSize = 14.sp,
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(top = 4.dp)
                         )
-                        Text(text = "description:${lab.description}", fontSize = 16.sp)
-                        Text(text = "comment:${lab.comment}", fontSize = 16.sp)
+                        if (lab.comment != null) {
+                            Text(
+                                text = "Коментар: ${lab.comment}",
+                                fontSize = 12.sp,
+                                style = MaterialTheme.typography.bodySmall,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
                     }
                 }
             }
@@ -101,6 +127,6 @@ fun SubjectDetailsScreen(
 @Composable
 private fun SubjectDetailsScreenPreview() {
     Lab4Theme {
-        SubjectDetailsScreen(SubjectDetailsRoute(1))
+        SubjectDetailsScreen(SubjectDetailsRoute(1), {})
     }
 }

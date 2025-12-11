@@ -8,6 +8,7 @@ import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSavedStateNavEntryDecorator
 import androidx.navigation3.scene.rememberSceneSetupNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import com.lab4.ui.screens.labDetails.LabDetailsScreen
 import com.lab4.ui.screens.subjectDetails.SubjectDetailsScreen
 import com.lab4.ui.screens.subjectsList.SubjectsListScreen
 import kotlinx.serialization.Serializable
@@ -18,6 +19,9 @@ data object SubjectsListRoute : NavKey
 
 @Serializable
 data class SubjectDetailsRoute(val id: Int) : NavKey
+
+@Serializable
+data class LabDetailsRoute(val labId: Int) : NavKey
 
 @Composable
 fun NavigationGraph(
@@ -40,7 +44,20 @@ fun NavigationGraph(
                     }
                 )
             }
-            entry<SubjectDetailsRoute> { route -> SubjectDetailsScreen(route) }
+            entry<SubjectDetailsRoute> { route ->
+                SubjectDetailsScreen(
+                    route = route,
+                    onLabClick = { labId ->
+                        backStack.add(LabDetailsRoute(labId))
+                    }
+                )
+            }
+            entry<LabDetailsRoute> { route ->
+                LabDetailsScreen(
+                    route = route,
+                    onBack = { backStack.pop() }
+                )
+            }
         }
     )
 }
